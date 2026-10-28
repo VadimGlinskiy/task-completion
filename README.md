@@ -1,58 +1,44 @@
 # Task Completion
 
-A practical Agent Skill for carrying a scoped software task through implementation, verification, and evidence-based acceptance.
+A general-purpose Agent Skill for finishing scoped work with evidence-based acceptance.
 
-It tells an agent to investigate failures, create focused synthetic tests or fixtures when needed, try reasonable alternate verification routes, and report a real external blocker precisely. It does not permit fabricated evidence, unsafe actions, or bypassing user consent and project rules.
+It applies to code, documentation, debugging, research, and other deliverables. It follows the user's scope and the project's own rules; it does not assume a language, framework, test runner, repository layout, or agent-specific tool.
 
 ## Install
 
-Install globally for all agents supported by the Skills CLI:
+Install globally for all agents detected by the Skills CLI:
 
 ~~~powershell
-npx skills add <OWNER>/task-completion --skill task-completion --global --agent '*' --yes
+npx skills add VadimGlinskiy/task-completion --skill task-completion --global --agent '*' --yes
 ~~~
 
-Or target specific agents without installing any agent applications:
+To install only in the current project, remove the --global option.
 
-~~~powershell
-npx skills add <OWNER>/task-completion --skill task-completion --global --agent codex --agent antigravity --agent hermes-agent --agent github-copilot --yes
-~~~
+The skill is located at skills/task-completion/SKILL.md. The Skills CLI supports multiple agents and project-level or global installation; see the [CLI reference](https://github.com/vercel-labs/skills/blob/main/docs/commands.md).
 
-Replace <OWNER> with the GitHub account or organization that hosts this repository. The CLI writes the skill to the selected agents' skill directories. The supported targets include Codex, Antigravity, Hermes Agent, and GitHub Copilot; see the [Skills CLI agent list](https://github.com/vercel-labs/skills#supported-agents).
+## What it does
 
-To install into the current project instead of globally, omit --global.
-
-## Update or remove
-
-~~~powershell
-npx skills update task-completion --global
-npx skills remove task-completion --global
-~~~
-
-## What the skill asks an agent to do
-
-1. Read the project's instructions and define the requested scope.
-2. Resolve required direct and transitive dependencies in order, accept each with evidence, then return to the original task.
-3. Implement the complete in-scope change, including focused test support when needed.
-4. Run relevant acceptance checks and fix failures caused by the change.
-5. If a route is unavailable, try safe isolated alternatives and state exactly what the evidence proves.
-6. Leave work open only for a genuine external constraint, with the blocked criterion and attempted alternatives recorded.
-7. Finish with an accurate summary of changes, checks, and remaining risks.
-
-## Limits
-
-A skill is guidance loaded by an AI agent, not an enforcement mechanism. An agent can still ignore it, and it cannot override the user's request, repository rules, access controls, safety requirements, or missing external access. The skill requires honest reporting; it does not claim that every task can be completed regardless of those constraints.
-
-## Repository layout
-
-~~~text
-skills/task-completion/SKILL.md
-~~~
+- Defines the requested outcome, constraints, and observable completion criteria.
+- Inspects the current implementation and relevant evidence before changing anything.
+- Resolves only dependencies required by the requested outcome, then returns to the original task.
+- Completes the work and performs focused, risk-appropriate verification.
+- Distinguishes a fixed defect, a disproved hypothesis, and a genuine external blocker.
+- Reports what changed, what was checked, and what remains uncertain.
 
 ## Use in a project
 
-Add a project instruction such as this to its AGENTS.md:
+Add a short instruction to the project's agent guidance file (for example, AGENTS.md, CONTRIBUTING.md, or the equivalent):
 
-> For implementation tasks, use the task-completion skill when available. Complete focused acceptance for the current task, and report only evidence-backed results.
+> For implementation tasks, use the Task Completion skill when available. Complete the requested scope, run focused acceptance checks appropriate to the change, and report evidence and remaining limitations.
 
-Keep project-specific acceptance rules in the project instructions; this skill provides the general completion workflow.
+Keep project-specific policies and acceptance criteria in the project guidance. This skill provides a reusable completion workflow.
+
+## Examples
+
+- **Code change:** fix the behavior, run the smallest relevant tests, and report the command and result.
+- **Documentation change:** edit the requested docs, check links and formatting where practical, and do not run unrelated test suites.
+- **External blocker:** finish independent work, try reasonable alternatives, then name the unavailable prerequisite and the exact acceptance item it prevents.
+
+## Limits
+
+A skill is guidance, not an enforcement mechanism. It cannot override the user's request, project instructions, safety requirements, access controls, or missing authorization. It requires honest reporting and does not promise that every task can be completed regardless of external constraints.

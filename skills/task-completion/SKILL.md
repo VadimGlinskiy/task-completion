@@ -1,78 +1,82 @@
 ---
 name: task-completion
-description: Persistently finish the user's scoped task through implementation, dependency resolution, acceptance, and evidence-based verification. Use for repository work, debugging, tests, documentation changes, and whenever an obstacle or failed check appears.
+description: Finish scoped work with evidence-based acceptance.
+version: 1.0.0
+author: Vadim Glinskiy (Lord_Inqusitor)
+platforms: [windows, macos, linux]
+metadata:
+  hermes:
+    tags: [task-completion, implementation, verification, blockers]
 ---
-
 # Task Completion
 
-Treat every obstacle as work to resolve. Do not stop at analysis, a plan, the first failed test, or a generic statement that something is blocked. Continue until the requested scope is complete and verified, or a genuine external constraint makes further progress impossible.
+Use this skill to carry a scoped request through implementation and appropriate verification. It applies to code, documentation, debugging, research, and other deliverables. It does not assume a particular language, framework, repository layout, test runner, or agent-specific tool.
 
-## 1. Fix the task boundary
+## When to Use
 
-1. Read the repository's agent instructions and the exact task or plan item. Treat audit prose, handoff summaries, and status notes as leads—not current evidence—then verify each implementation claim against the live source and relevant tests before acting on it; these notes can lag behind code changes. Use the task's acceptance criteria as the finish line.
-2. Keep the work inside that boundary. For a request naming several tasks, maintain a per-task acceptance checklist and continue across all in-scope items; do not stop after completing one convenient slice. Do not expand into unrelated backlog items, broad test suites, or opportunistic refactors.
-3. If ordinary details are unspecified, inspect the code and project conventions and choose a reversible, consistent default. Ask the user only when a decision is genuinely theirs to make or required input is unavailable.
-4. Respect explicit analysis-only, review-only, or other scope limits.
+- The user asks you to complete, implement, fix, or deliver a bounded outcome.
+- A task has required prerequisites, acceptance criteria, or a verification step.
+- A failure or unavailable route needs diagnosis before the task can be reported accurately.
 
-## 2. Execute through the finish line
+Respect analysis-only, review-only, and other explicit scope limits. Do not use persistence as a reason to expand the task.
 
-1. Inspect the current implementation, callers, relevant tests, and required project references before changing files.
-2. Make the smallest complete change that satisfies the acceptance criteria. If necessary work appears outside the original task boundary, explain the direct dependency and include only that necessary work.
-3. Add focused tests when existing tests do not prove the changed behavior. Use deterministic synthetic fixtures where appropriate; never invent results or use real user data without authorization.
-4. Run the relevant focused checks. When one fails, preserve its actual output, locate the cause, fix it, and rerun the affected check. Review the final diff and confirm there are no unfinished criteria.
-5. Do not send an intermediate completion report while actionable task work remains. Keep the task state in the project's existing tracking files when the repository requires it; do not create extra planning or report files.
+## Procedure
 
-## 3. Agent-owned acceptance
+1. **Define the outcome.** Read the user's request and the relevant project instructions. Identify what should be delivered, the acceptance criteria, constraints, permissions, and any explicit stop conditions. For shared work, inspect the current status and changes before editing.
 
-Acceptance is part of the task. The agent performs it; it is not a later phase to defer by default and not work to hand back to the user.
+2. **Inspect current evidence.** Read the implementation, callers, relevant tests, and references needed for this task. Treat old reports and status notes as leads; confirm important claims against the current source or actual outputs. Choose the smallest checks that can prove the requested result.
 
-1. Before implementation, turn every in-scope acceptance criterion into an observable result and identify the smallest check that can prove it. For a request covering several tasks, keep a separate checklist and evidence for each task.
-2. Run the acceptance checks yourself after implementation. If the necessary test, fixture, harness, or isolated UI route does not exist, create the smallest task-scoped synthetic one and use it. Follow repository rules for hidden/isolated UI testing and real user data.
-3. When acceptance fails, treat that as a defect or a test/setup problem to diagnose and fix; rerun the failed check after the fix. Do not stop after reporting that acceptance is missing, incomplete, or failed.
-4. Do not leave a task `[~]`, call it unfinished, or defer it to a future acceptance phase solely because acceptance has not been performed, the test does not exist, or the agent has not yet collected evidence. Statements such as “tasks remain open because acceptance was not done” describe remaining work; they do not justify stopping. Do the acceptance work now.
-5. Leave an in-scope item open only when a specific external constraint genuinely prevents the remaining check after reasonable alternative routes have been tried. Record the exact unavailable prerequisite, the criterion it blocks, the alternatives attempted, and the evidence already obtained. Finish all independent acceptance items and tasks first.
-6. Respect explicit project status semantics. A separate final integration or release gate does not remove the obligation to complete the current task's focused acceptance; do not run unrelated broad suites or claim product-wide acceptance when only a focused slice was verified.
+3. **Resolve required dependencies.** Follow only prerequisites necessary for the requested outcome. Work in dependency order, record evidence for each, then return to the original task. Do not absorb unrelated backlog items. If a dependency is blocked, continue independent work and revisit it when conditions change.
 
-## 4. Turn blockers into work
+4. **Make the smallest complete change.** Implement the requested behavior without opportunistic refactoring. Add a focused test or fixture when it is needed to prove changed behavior and is allowed by the task. Preserve existing project conventions and user data.
 
-When any command, test, tool, dependency, environment, or acceptance step is blocked:
+5. **Verify proportionally.** Run the focused checks required by the user or project and those warranted by the change. Do not run unrelated suites. When a check fails, inspect the failure, fix causes within scope, and rerun the affected check. If a verification route is unavailable, try a reasonable alternative and state what that alternative proves and what it does not.
 
-1. Record the exact failure and evidence. Do not rely on a guessed cause or repeat the same failed attempt unchanged.
-2. Find a different route: inspect installed tools and project helpers; read the local implementation and authoritative references; reduce the check to the smallest relevant case; use an available runtime or test seam; prepare synthetic data; or build the smallest task-relevant fixture, harness, or adapter needed to proceed.
-3. Resolve agent-created blockers immediately, including missing test coverage, missing setup scripts, incorrect assumptions, and avoidable test-environment gaps. Treat creating the needed task-scoped test support as part of the task when it is required to verify acceptance.
-4. If one verification route is unavailable, use another route that can prove the same criterion. Clearly label the evidence level and what it proves. Static inspection must not be reported as a successful runtime test; a partial substitute must not be reported as full acceptance.
-5. Continue every independent acceptance item while working on a blocked dependency. Revisit the dependency after each relevant change or newly available route.
+6. **Handle blockers precisely.** Do not call work blocked after the first failed command. Diagnose the failure and try a safe, relevant alternative. A genuine blocker is an unavailable external prerequisite, permission, resource, or user decision that prevents a specific acceptance criterion. Finish independent work, record the alternatives tried, and name the blocked criterion.
 
-Do not declare a task blocked merely because the first approach failed, a preferred tool is missing, the required test does not exist yet, setup is inconvenient, or a test window would otherwise appear on the user's desktop. Investigate and build the safe, isolated path needed for the current task.
+7. **Close the loop.** Confirm that every in-scope deliverable has an outcome. Update the project's canonical tracker or handoff only when its rules require it. Report the changes, checks and results, and any remaining limitation. Never claim a check passed unless it actually ran and produced evidence.
 
-### Resolve dependencies, then return to the original task
+## Dependency Work
 
-If the requested task is left open because named prerequisite tasks remain open, treat those prerequisites as part of the work needed to complete the requested task. Do not stop after listing dependency IDs in a status note.
+When a requested outcome depends on other tasks:
 
-1. Build the direct and transitive dependency chain required by the requested task. Check current project instructions, tracker entries, live code, and acceptance criteria; a status label alone is not proof that a dependency is complete or impossible.
-2. Work through that chain in dependency order, starting with prerequisites that are ready to implement. For each required dependency, implement its scoped change, add or prepare focused synthetic tests or fixtures when needed, run its acceptance checks, and record evidence before marking it complete.
-3. Keep the original task as the return point. After accepting each prerequisite, return to the original task, re-evaluate what remains, and continue until its own implementation and acceptance criteria are satisfied. Do not leave the parent task [~] merely because its dependencies were open.
-4. Follow only dependencies that are necessary for the original acceptance. Do not absorb unrelated open work. Detect dependency cycles and resolve the smallest actionable prerequisite or correct the dependency records instead of looping.
-5. When a required acceptance route uses special conditions, build a safe isolated route where possible: use a desktop test session for UIA/DPI checks, a quota-limited test volume or injected I/O failure for disk-full behavior, and controlled test plugins or synthetic fixtures for format logic. Never fill the real disk or claim that a synthetic fixture proves compatibility with an untested real plugin or desktop environment.
-6. If an exact required condition still cannot be reproduced safely, finish all other dependencies and acceptance checks, then record the unavailable prerequisite, the criterion it blocks, alternatives attempted, and what the evidence does and does not prove. Resume the original task after that dependency is resolved; do not treat an open dependency as a terminal explanation.
+1. Map the direct and transitive dependencies that are necessary for acceptance.
+2. Complete those dependencies in order, using their own scoped acceptance criteria.
+3. Return to the original task after each dependency and reassess what remains.
+4. Avoid dependency cycles and unrelated prerequisites.
+5. If one exact acceptance condition remains unavailable, finish all independent work and state the missing condition and its impact.
 
-Example: if a status says task P remains [~] because prerequisites A, B, and C are open, work through A, B, and C in dependency order, accept each with evidence, then return to P and perform P’s own acceptance. A list of open dependency IDs is a work queue, not proof that P must remain unfinished.
+A list of open prerequisites is a work queue, not proof that the requested outcome is impossible.
 
-## 5. Boundaries that cannot be bypassed
+## Boundaries
 
-Persistence does not authorize fabricating evidence, bypassing access controls, secrets, user consent, safety rules, or a required user decision. Do not perform destructive or externally consequential actions without the authorization required by the project and user.
+- Stop or rescope when the user changes or cancels the request.
+- Do not fabricate results, bypass access controls, or exceed user consent.
+- Follow the project's data-safety and verification policies.
+- Do not turn every task into a test-writing task. Match verification to behavior, risk, and the user's instructions.
+- Do not claim product-wide acceptance from a focused check.
 
-If progress truly requires unavailable access, a secret, an external service, or a decision only the user can make, finish all independent work first. State the exact missing prerequisite and the acceptance item it prevents; do not claim full completion. Preserve enough verified state for work to resume without repeating completed steps.
+## Evidence Examples
 
-## 6. Completion check
+- **Code:** name the focused test or build command and its actual result.
+- **Documentation:** identify the edited files and relevant formatting, link, or rendering checks.
+- **Unverified behavior:** state the static evidence or substitute check and its limits; do not describe it as runtime acceptance.
+- **External blocker:** state the unavailable prerequisite, the acceptance criterion it prevents, alternatives attempted, and completed independent work.
 
-Before ending, verify all of the following:
+## Pitfalls
 
-- Every acceptance criterion within the user's requested scope has a concrete result.
-- Relevant focused checks pass, or the exact external prerequisite preventing them is documented.
-- Failures discovered during this work were fixed and the affected checks rerun, or remain explicitly tied to a genuine external constraint.
-- Tests and runtime actions respected data-safety, isolation, and scope rules.
-- Required project tracking files reflect the actual state; no unrelated files or claims were added.
-- The final message summarizes completed work and evidence, and names any genuine remaining external blocker precisely.
+- Stopping after a plan when implementation was requested.
+- Expanding scope to unrelated work because it appears useful.
+- Trusting stale summaries instead of checking current source.
+- Treating the first failed route as proof that the task is blocked.
+- Confusing partial evidence with full acceptance.
+- Leaving the user to perform checks that the agent can safely perform itself.
 
-Do not say “done” while any in-scope, actionable acceptance criterion remains open. A failed route is a reason to choose another route, not a reason to abandon the task.
+## Completion Check
+
+Before reporting completion, confirm:
+
+- The requested in-scope outcome is delivered.
+- Required focused checks ran, or a concrete external blocker is recorded.
+- Failures and remaining limitations are described accurately.
+- Required project tracking is current, with no unrelated changes included.
